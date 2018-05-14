@@ -32,6 +32,8 @@ import (
 
 	"github.com/kubernetes-csi/external-attacher/pkg/connection"
 	"github.com/kubernetes-csi/external-attacher/pkg/controller"
+
+	"github.com/kubernetes-csi/drivers/pkg/csi-common"
 )
 
 const (
@@ -66,6 +68,8 @@ var (
 func main() {
 	flag.Set("logtostderr", "true")
 	flag.Parse()
+	closer := csicommon.InitTracer("csi-attacher")
+	defer closer()
 
 	if *showVersion {
 		fmt.Println(os.Args[0], version)
