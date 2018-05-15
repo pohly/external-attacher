@@ -17,6 +17,11 @@
   name = "github.com/kubernetes-csi/csi-test"
 
 [[constraint]]
+  branch = "jaeger-tracing"
+  name = "github.com/kubernetes-csi/drivers"
+  source = "github.com/pohly/drivers"
+
+[[constraint]]
   name = "google.golang.org/grpc"
   version = "1.9.2"
 
