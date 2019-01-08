@@ -23,4 +23,4 @@ later time.
 Cheat sheet:
 
 - `git subtree pull --prefix=build-rules https://github.com/kubernetes-csi/csi-build-rules.git master` - update local copy to latest upstream
-- edit, `git commit`, `git subtree push --prefix=build-rules git@github.com:<user>/csi-build-rules.git refs/heads/<my-new-branch>` - push to a new branch before submitting a PR
+- edit, `git commit`, `git subtree push --prefix=build-rules git@github.com:<user>/csi-build-rules.git <my-new-or-existing-branch>` - push to a new branch before submitting a PR
