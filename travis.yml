@@ -1,0 +1,15 @@
+language: go
+go_import_path: github.com/kubernetes-csi/external-attacher
+sudo: required
+services:
+  - docker
+matrix:
+  include:
+  - go: 1.10.3
+script:
+- make all test
+after_success:
+  - if [ "${TRAVIS_PULL_REQUEST}" == "false" ]; then
+      docker login -u "${DOCKER_USERNAME}" -p "${DOCKER_PASSWORD}" quay.io;
+      make push;
+    fi
