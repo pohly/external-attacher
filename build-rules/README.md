@@ -6,9 +6,9 @@ in the top-level Makefile.
 
 The rules include support for building and pushing Docker images, with
 the following features:
- - support more than one command per repo, should that be necessary
- - automatically derive image tag from repo tags
+ - one or more command and image per project
  - push canary and/or tagged release images
+ - automatically derive the image tag(s) from repo tags
  - never overwrite an existing release image
 
 Sharing and updating
@@ -17,8 +17,8 @@ Sharing and updating
 `[git subtree](https://github.com/git/git/blob/master/contrib/subtree/git-subtree.txt)`
 is the recommended way of maintaining a copy of the rules inside the
 `build-rules` directory of a project. This way, it is possible to make
-changes also locally and push them back to the shared repository at a
-later time.
+changes also locally, test them and then push them back to the shared
+repository at a later time.
 
 Cheat sheet:
 
