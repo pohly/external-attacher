@@ -16,4 +16,4 @@ CMDS=csi-attacher
 all: build
 
 include build-rules/build.make
-
+REGISTRY_NAME=quay.io/pohly
