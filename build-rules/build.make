@@ -23,9 +23,9 @@
 REGISTRY_NAME=quay.io/k8scsi
 
 # Revision that gets built into each binary via the main.version
-# string.  Uses the `git describe` output based on the most recent
-# version tag with a short revision suffix or if nothing has been
-# tagged yet, just full the revision.
+# string. Uses the `git describe` output based on the most recent
+# version tag with a short revision suffix or, if nothing has been
+# tagged yet, just the revision.
 #
 # Beware that tags may also be missing in shallow clones as done by
 # some CI systems (like TravisCI, which pulls only 50 commits).
