@@ -12,47 +12,38 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# The following make rules support building one or more command,
-# packaging them in a containers and pushing to a registry. The expected
-# repository layout is:
-# - cmd/*/*.go - source code for each command
-# - cmd/*/Dockerfile - docker file for each command
-#
-# The image name is the same as the command name. A new build
-# gets pushed under different versions:
-# - "canary" when building the master branch, overwriting older builds
-# - "<branch name>-canary" for other branches, overwriting older builds
-# - "vA.B.C[-something]" when build a revision tagged as that *and* when there is no such
-#   image already, i.e. releases never get modified once pushed
-#
-# Using this approach it is not necessary to modify files to change
-# versions and therefore it is also not necessary to create release
-# branches in advance.
-#
-# Instead, the master branch can enter a freeze period where only
-# release-critical commits are accepted, then a revision gets tagged
-# and the next build will produce the release image. Once it becomes
-# necessary to do a bugfix release, a branch can be created based on
-# the tag and bug fixes can be merged there until that branch also
-# gets tagged.
-
 .PHONY: build-% build container-% container push-% push clean test
 
 # A space-separated list of all commands in the repository, must be
 # set in main Makefile of a repository.
 # CMDS=
 
+# This is the default. It can be overridden in the main Makefile after
+# including build.make.
+REGISTRY_NAME=quay.io/k8scsi
+
 # Revision that gets built into each binary via the main.version string.
 # Always includes the revision as a suffix.
 REV=$(shell git describe --long --tags --match='v*' --dirty)
-# Previous taggged revision (may or may not be the same)
-TAGGED_REV=$(shell git describe --tags --match='v*' --abbrev=0)
 
-REGISTRY_NAME=quay.io/k8scsi
-IMAGE_TAGS=$(shell echo $$(git rev-parse --abbrev-ref HEAD)-canary | sed -e 's/^master-canary$$/canary/'; \
-                   if [ "$$(git rev-list -n1 HEAD)" = "$$(git rev-list -n1 $(TAGGED_REV))" ]; then echo '$(TAGGED_REV)'; fi)
+# A space-separated list of image tags under which the current build is to be pushed.
+# Determined dynamically.
+IMAGE_TAGS=
+
+# A "canary" image gets built if the current commit is the head of the remote "master" branch.
+# That branch does not exist when building some other branch in TravisCI.
+IMAGE_TAGS+=$(shell if [ "$$(git rev-list -n1 HEAD)" = "$$(git rev-list -n1 origin/master 2>/dev/null)" ]; then echo "canary"; fi)
+
+# A "X.Y.Z-canary" image gets built if the current commit is the head of a "origin/release-X.Y.Z" branch.
+# The actual suffix does not matter, only the "release-" prefix is checked.
+IMAGE_TAGS+=$(shell git branch -r --points-at=HEAD | grep 'origin/release-' | grep -v -e ' -> ' | sed -e 's;.*/release-\(.*\);\1-canary;')
+
+# A release image "vX.Y.Z" gets built if there is a tag of that format for the current commit.
+# --abbrev=0 suppresses long format, only showing the closest tag.
+IMAGE_TAGS+=$(shell tagged="$$(git describe --tags --match='v*' --abbrev=0)"; if [ "$$tagged" ] && [ "$$(git rev-list -n1 HEAD)" = "$$(git rev-list -n1 $$tagged)" ]; then echo $$tagged; fi)
+
+# Images are named after the command contained in them.
 IMAGE_NAME=$(REGISTRY_NAME)/$*
-
 
 ifdef V
 TESTARGS = -v -args -alsologtostderr -v 5

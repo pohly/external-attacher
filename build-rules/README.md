@@ -25,3 +25,23 @@ Cheat sheet:
 
 - `git subtree pull --prefix=build-rules https://github.com/kubernetes-csi/csi-build-rules.git master` - update local copy to latest upstream
 - edit, `git commit`, `git subtree push --prefix=build-rules git@github.com:<user>/csi-build-rules.git <my-new-or-existing-branch>` - push to a new branch before submitting a PR
+
+Usage
+-----
+
+The expected repository layout is:
+ - cmd/*/*.go - source code for each command
+ - cmd/*/Dockerfile - docker file for each command or
+   Dockerfile in the root when only building a single command
+
+To create a release, tag a certain revision with a name that
+starts with `v`, for example `v1.0.0`, then `make push-<command>`
+while that commit is checked out.
+
+It does not matter on which branch that revision exists, i.e. it is
+possible to create releases directly from master. A release branch can
+still be created for that release later if (and only if) needed.
+
+Release branches are expected to be named `release-x.y` for releases
+`x.y.z`. Building from such a branch creates `x.y-canary`
+images. Building from master creates the main `canary` image.
