@@ -9,7 +9,8 @@ the following features:
  - one or more command and image per project
  - push canary and/or tagged release images
  - automatically derive the image tag(s) from repo tags
- - never overwrite an existing release image
+ - the source code revision is stored in a "revision" image label
+ - never overwrites an existing release image
 
 Sharing and updating
 --------------------
