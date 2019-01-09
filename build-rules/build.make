@@ -61,6 +61,9 @@ TESTARGS =
 endif
 
 build-%:
+	git status
+	git branch
+	git branch -r
 	mkdir -p bin
 	CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-X main.version=$(REV) -extldflags "-static"' -o ./bin/$* ./cmd/$*
 
