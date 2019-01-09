@@ -40,7 +40,7 @@ while that commit is checked out.
 
 It does not matter on which branch that revision exists, i.e. it is
 possible to create releases directly from master. A release branch can
-still be created for that release later if (and only if) needed.
+still be created for maintenance releases later if needed.
 
 Release branches are expected to be named `release-x.y` for releases
 `x.y.z`. Building from such a branch creates `x.y-canary`
